@@ -51,12 +51,36 @@
               <option value="hard">Hard</option>
             </select>
           </div>
-          <div class="question-type"></div>
+          <div class="question-type">
+            <div class="radio-wrapper">
+              <input
+                type="radio"
+                class="radio-wrapper__radio"
+                id="multiple-choice"
+                name="age"
+                value="child"
+              />
+              <label for="child" class="radio-wrapper__label"
+                >Multiple choice</label
+              >
+            </div>
+
+            <div class="radio-wrapper">
+              <input
+                type="radio"
+                class="radio-wrapper__radio"
+                id="true-false-choice"
+                name="age"
+                value="child"
+              />
+              <label for="child" class="radio-wrapper__label">True/false</label>
+            </div>
+          </div>
         </div>
-        <button class="cta-btn cta-btn--start-game" id="start-game-btn">
-          Start Playing
-        </button>
       </div>
+      <button class="cta-btn cta-btn--start-game" id="start-game-btn">
+        Start Playing
+      </button>
     </main>
 
     <script type="module" src="js/main.js"></script>
