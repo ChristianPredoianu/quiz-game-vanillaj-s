@@ -3,7 +3,6 @@ import { getUserSelectedCategory } from './main';
 
 export function initGameUi() {
   document.getElementById('game-section-container').style.display = 'block';
-
   removeInitialGameUi();
 
   getCategories().then((data) => {
@@ -35,6 +34,12 @@ export function addEventListenerToCategoryCards() {
   categoryCards.forEach((categoryCard) => {
     categoryCard.addEventListener('click', function () {
       getUserSelectedCategory(this.innerText);
+
+      categoryCards.forEach((categoryCard) => {
+        categoryCard.classList.remove('selected-category-card');
+      });
+
+      this.classList.add('selected-category-card');
     });
   });
 }
