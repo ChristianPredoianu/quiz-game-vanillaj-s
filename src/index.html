@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./sass/_main.scss" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Quiz Game</title>
+  </head>
+  <body>
+    <main class="main" id="main">
+      <div class="initial-game-ui" id="initial-game-ui">
+        <div class="overlay" id="overlay"></div>
+        <h1 class="initial-game-ui__heading" id="game-section-heading">
+          Quiz <span class="initial-game-ui__span">game</span>
+        </h1>
+        <button class="cta-btn" id="continue-btn">Start Playing</button>
+      </div>
+      <div class="game-section container" id="game-section-container">
+        <h2 class="game-section__heading">Choose a category</h2>
+        <div class="lds-default" id="loading-spinner">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <h1 class="fetch-error-msg" id="fetch-error-msg"></h1>
+        <div class="categories-container" id="categories-container"></div>
+        <div class="game-options" id="game-options">
+          <div class="difficulty">
+            <label for="difficulty" class="difficulty-dropdown__label"
+              >Difficulty:</label
+            >
+            <select name="cars" id="cars" class="difficulty-dropdown__dropdown">
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          <div class="question-type"></div>
+        </div>
+        <button class="cta-btn cta-btn--start-game" id="start-game-btn">
+          Start Playing
+        </button>
+      </div>
+    </main>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
