@@ -1,7 +1,9 @@
 @use '../abstracts/' as *;
+@use '../animations/pulse-animation';
 
 .category-card {
   @include flex-config($justify: center, $align: center);
+  position: relative;
   font-size: 1.5rem;
   background: rgb(71, 64, 205);
   background: linear-gradient(
@@ -10,5 +12,13 @@
     rgba(93, 9, 121, 1) 100%,
     rgba(0, 212, 255, 1) 100%
   );
-  padding: 3rem;
+  padding: 2.5rem;
+  text-align: center;
+  border-radius: 2rem;
+  box-shadow: var(--shdw-box);
+  cursor: pointer;
+}
+
+.selected-category-card {
+  animation: pulse 1s infinite;
 }
