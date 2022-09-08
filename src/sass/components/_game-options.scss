@@ -1,0 +1,62 @@
+@use '../abstracts/' as *;
+
+.game-options {
+  flex-direction: column;
+  padding: 3rem 0;
+  font-weight: var(--fw-bold);
+  display: none;
+
+  @include respond(sm) {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+  }
+}
+
+.difficulty-dropdown {
+  text-align: center;
+  padding: 2rem 0;
+
+  flex-direction: column;
+
+  &__label {
+    display: block;
+    font-size: 2rem;
+    color: var(--clr-gray-dark);
+    padding-bottom: 1rem;
+  }
+
+  &__dropdown {
+    width: 100%;
+    border: 1px solid blueviolet;
+    border-radius: 0.25em;
+    padding: 0.25em 0.5em;
+    font-size: 1.25rem;
+    cursor: pointer;
+    font-size: 1.5rem;
+    line-height: 1.1;
+    background-color: #fff;
+    background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+  }
+}
+
+.question-type {
+  @include flex-config($justify: center);
+  margin-top: 2rem;
+}
+
+.radio-wrapper {
+  &__radio {
+    cursor: pointer;
+
+    &:not(:nth-child(0)) {
+      margin-left: 1rem;
+    }
+  }
+
+  &__label {
+    color: var(--clr-gray-dark);
+    margin-left: 0.5rem;
+    font-size: 1.5rem;
+  }
+}
