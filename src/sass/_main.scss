@@ -51,8 +51,8 @@
     $align: center,
     $justify: space-around
   );
+  min-height: 80vh;
   position: relative;
-  min-height: 100vh;
   display: none;
   color: var(--clr-primary);
 
@@ -76,10 +76,11 @@
   background-color: rgb(187, 58, 226);
   color: var(--clr-primary);
   cursor: pointer;
+  box-shadow: var(--shdw-box);
 
   &--start-game {
     display: none;
-    margin: 10rem auto 10rem auto;
+    margin: 5rem auto 5rem auto;
   }
 }
 
@@ -92,7 +93,6 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
-  padding-bottom: 10rem;
 
   @include respond(sm) {
     grid-template-columns: repeat(2, 1fr);
@@ -103,25 +103,7 @@
   }
 
   @include respond(lg) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-.game-options {
-  display: none;
-  justify-content: space-around;
-}
-
-.difficulty-dropdown {
-  text-align: center;
-  padding: 2rem 0;
-  display: none;
-  flex-direction: column;
-
-  &__label {
-    display: block;
-    font-size: 2rem;
-    color: var(--clr-gray-dark);
-    padding-bottom: 1rem;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(4, 1fr);
   }
 }
