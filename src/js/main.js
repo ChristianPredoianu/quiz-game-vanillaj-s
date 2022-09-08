@@ -5,6 +5,7 @@ document.getElementById('continue-btn').addEventListener('click', () => {
 });
 
 export function getUserSelectedCategory(category) {
+  console.log(category);
   return category;
 }
 
