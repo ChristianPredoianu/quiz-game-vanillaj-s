@@ -23,7 +23,9 @@
         <button class="cta-btn" id="continue-btn">Start Playing</button>
       </div>
       <div class="game-section container" id="game-section-container">
-        <h2 class="game-section__heading">Choose a category</h2>
+        <h2 class="game-section__heading" id="category-heading">
+          Choose a category
+        </h2>
         <div class="lds-default" id="loading-spinner">
           <div></div>
           <div></div>
@@ -41,14 +43,32 @@
         <h1 class="fetch-error-msg" id="fetch-error-msg"></h1>
         <div class="categories-container" id="categories-container"></div>
         <div class="game-options" id="game-options">
-          <div class="difficulty">
-            <label for="difficulty" class="difficulty-dropdown__label"
-              >Difficulty:</label
+          <div class="select">
+            <label for="difficulty" class="select__label">Difficulty:</label>
+            <select
+              name="difficulty"
+              class="select__dropdown"
+              id="difficulty-select"
             >
-            <select name="cars" id="cars" class="difficulty-dropdown__dropdown">
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>
               <option value="hard">Hard</option>
+            </select>
+          </div>
+          <div class="select">
+            <label for="amount of questions" class="select__label"
+              >Amount:</label
+            >
+            <select
+              name="amount-of-questions"
+              class="select__dropdown"
+              id="amount-of-questions-select"
+            >
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
+              <option value="40">40</option>
+              <option value="50">50</option>
             </select>
           </div>
           <div class="question-type">
@@ -56,11 +76,11 @@
               <input
                 type="radio"
                 class="radio-wrapper__radio"
-                id="multiple-choice"
-                name="age"
+                name="questions-type"
                 value="multiple"
+                checked
               />
-              <label for="child" class="radio-wrapper__label"
+              <label for="questions type" class="radio-wrapper__label"
                 >Multiple choice</label
               >
             </div>
@@ -69,8 +89,7 @@
               <input
                 type="radio"
                 class="radio-wrapper__radio"
-                id="true-false-choice"
-                name="age"
+                name="questions-type"
                 value="boolean"
               />
               <label for="child" class="radio-wrapper__label">True/false</label>
@@ -78,6 +97,8 @@
           </div>
         </div>
       </div>
+      <p class="options-error" id="options-error"></p>  
+      </p>
       <button class="cta-btn cta-btn--start-game" id="start-game-btn">
         Start Playing
       </button>
