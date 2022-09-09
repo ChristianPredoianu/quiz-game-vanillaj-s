@@ -1,0 +1,19 @@
+.cta-btn {
+  font-size: 2rem;
+  padding: 2rem 4rem;
+  border-radius: 5rem;
+  border: none;
+  outline: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1rem;
+  font-weight: var(--fw-bold);
+  background-color: rgb(187, 58, 226);
+  color: var(--clr-primary);
+  cursor: pointer;
+  box-shadow: var(--shdw-box);
+
+  &--start-game {
+    display: none;
+    margin: 2rem auto 5rem auto;
+  }
+}
