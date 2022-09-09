@@ -5,15 +5,17 @@
   padding: 3rem 0;
   font-weight: var(--fw-bold);
   display: none;
+  padding: 0 5rem;
 
   @include respond(sm) {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    padding: 2rem 0;
   }
 }
 
-.difficulty-dropdown {
+.select {
   text-align: center;
   padding: 2rem 0;
 
@@ -22,13 +24,13 @@
   &__label {
     display: block;
     font-size: 2rem;
-    color: var(--clr-gray-dark);
+    color: var(--clr-dark-blue);
     padding-bottom: 1rem;
   }
 
   &__dropdown {
     width: 100%;
-    border: 1px solid blueviolet;
+    border: 1px solid #8a2be2;
     border-radius: 0.25em;
     padding: 0.25em 0.5em;
     font-size: 1.25rem;

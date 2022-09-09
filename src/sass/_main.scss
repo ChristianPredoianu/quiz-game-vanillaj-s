@@ -64,26 +64,6 @@
   }
 }
 
-.cta-btn {
-  font-size: 2rem;
-  padding: 2rem 4rem;
-  border-radius: 5rem;
-  border: none;
-  outline: none;
-  text-transform: uppercase;
-  letter-spacing: 0.1rem;
-  font-weight: var(--fw-bold);
-  background-color: rgb(187, 58, 226);
-  color: var(--clr-primary);
-  cursor: pointer;
-  box-shadow: var(--shdw-box);
-
-  &--start-game {
-    display: none;
-    margin: 5rem auto 5rem auto;
-  }
-}
-
 .fetch-error-msg {
   display: none;
 }
@@ -93,6 +73,7 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
+  padding: 0 5rem;
 
   @include respond(sm) {
     grid-template-columns: repeat(2, 1fr);
@@ -106,4 +87,33 @@
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(4, 1fr);
   }
+}
+
+.pulse-categories-container {
+  animation: pulse 2s infinite;
+}
+
+.options-error {
+  display: none;
+  font-size: 1.8rem;
+  font-weight: var(--fw-bold);
+  text-align: center;
+  color: var(--clr-invalid);
+  animation: pulse 2s infinite;
+  padding: 2rem 0;
+}
+
+.question-div {
+  font-size: clamp(1.8rem, 2vw, 2.5rem);
+  background: rgb(71, 64, 205);
+  background: linear-gradient(
+    357deg,
+    rgba(71, 64, 205, 1) 0%,
+    rgba(93, 9, 121, 1) 100%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  padding: 10rem 3rem;
+  border-bottom-left-radius: 2rem;
+  border-bottom-right-radius: 2rem;
+  text-align: center;
 }
