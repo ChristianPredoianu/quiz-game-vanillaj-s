@@ -1,0 +1,39 @@
+@use '../abstracts' as *;
+@use '../animations/countdown-animation' as *;
+
+#countdown {
+  display: none;
+  position: relative;
+  margin: auto;
+  margin-top: 5rem;
+  height: 4rem;
+  width: 4rem;
+  text-align: center;
+}
+
+#countdown-number {
+  color: white;
+  display: inline-block;
+  line-height: 40px;
+}
+
+svg {
+  @include position($pos: absolute, $top: 0, $right: 0);
+  width: 4rem;
+  height: 4rem;
+  transform: rotateY(-180deg) rotateZ(-90deg);
+}
+
+svg circle {
+  stroke-dasharray: 113px;
+  stroke-dashoffset: 0px;
+  stroke-linecap: round;
+  stroke-width: 3px;
+  stroke: #ffffff;
+  fill: none;
+  /* animation: countdown 5s linear forwards; */
+}
+
+.countdown-animation {
+  animation: countdown 5s linear forwards;
+}
