@@ -109,7 +109,7 @@ function initialQuestion(data) {
   ui.removeGameOptionsUi();
   ui.displayOptionsError('none');
   ui.displayQuestion(data, 0);
-  initQuestionTimer();
+  s;
   selectedGameOptions.questionsOptions === 'multiple'
     ? ui.createMultipleChoiceAnswers(data, 0)
     : ui.createTrueFalseAnswers(data, currentQuestion);
