@@ -23,6 +23,16 @@
         <button class="cta-btn" id="continue-btn">Start Playing</button>
       </div>
       <div class="game-section container" id="game-section-container">
+        <div class="question-div" id="question-div">
+          <h3 class="question-div__heading" id="question-heading"></h3>
+          <p class="question-div__paragraph" id="question-paragraph"></p>
+          <div id="countdown">
+            <div id="countdown-number"></div>
+            <svg>
+              <circle id="svg-circle" r="18" cx="20" cy="20"></circle>
+            </svg>
+          </div>
+        </div>
         <h2 class="game-section__heading" id="category-heading">
           Choose a category
         </h2>
@@ -96,12 +106,16 @@
             </div>
           </div>
         </div>
+        <button class="cta-btn cta-btn--next-question" id="next-question-btn">
+          Next Question
+        </button>
       </div>
       <p class="options-error" id="options-error"></p>  
       </p>
       <button class="cta-btn cta-btn--start-game" id="start-game-btn">
         Start Playing
       </button>
+
     </main>
 
     <script type="module" src="js/main.js"></script>
