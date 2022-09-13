@@ -2,7 +2,7 @@
 @use './base/' as *;
 @use './utilities/' as *;
 @use './components/' as *;
-@use './animations/' as *;
+@use './animations/pulse-animation' as *;
 
 .main {
   background-image: url('../assets/game-background.jpg');
@@ -104,6 +104,7 @@
 }
 
 .question-div {
+  display: none;
   font-size: clamp(1.8rem, 2vw, 2.5rem);
   background: rgb(71, 64, 205);
   background: linear-gradient(
@@ -112,8 +113,12 @@
     rgba(93, 9, 121, 1) 100%,
     rgba(0, 212, 255, 1) 100%
   );
-  padding: 10rem 3rem;
+  padding: 5rem 3rem;
   border-bottom-left-radius: 2rem;
   border-bottom-right-radius: 2rem;
   text-align: center;
+
+  &__heading {
+    padding: 2rem;
+  }
 }
