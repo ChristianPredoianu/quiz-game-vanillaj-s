@@ -1,4 +1,9 @@
-import { selectedCategoryCard, currentQuestion } from './main';
+import { selectedCategoryCard } from './main';
+
+const categoriesContainer = document.getElementById('categories-container');
+const gameOptions = document.getElementById('game-options');
+const svgCircle = document.getElementById('svg-circle');
+const questionDiv = document.getElementById('question-div');
 
 export function removeInitialGameUi() {
   document.getElementById('initial-game-ui').style.display = 'none';
@@ -12,8 +17,6 @@ export function displayFetchError(error) {
 }
 
 export function createCategoryCards(data) {
-  const categoriesContainer = document.getElementById('categories-container');
-
   const categories = data.trivia_categories;
 
   categories.forEach((category) => {
@@ -32,12 +35,11 @@ export function removeSelectedCategoryClass(categoryCard) {
 }
 
 export function displayLoadingSpinner(display) {
-  const loadingSpinner = document.getElementById('loading-spinner');
-  loadingSpinner.style.display = display;
+  document.getElementById('loading-spinner').style.display = display;
 }
 
 export function displayCallToActions() {
-  document.getElementById('game-options').style.display = 'flex';
+  gameOptions.style.display = 'flex';
   document.getElementById('start-game-btn').style.display = 'block';
 }
 
@@ -48,43 +50,50 @@ export function displayOptionsError(display, error = '') {
 }
 
 export function pulseCategoryContainer() {
-  document
-    .getElementById('categories-container')
-    .classList.add('pulse-categories-container');
+  categoriesContainer.classList.add('pulse-categories-container');
 }
 
 export function removePulseCategoryContainer() {
-  document
-    .getElementById('categories-container')
-    .classList.remove('pulse-categories-container');
+  categoriesContainer.classList.remove('pulse-categories-container');
 }
 
 export function removeGameOptionsUi() {
   document.getElementById('category-heading').style.display = 'none';
-  document.getElementById('categories-container').style.display = 'none';
-  document.getElementById('game-options').style.display = 'none';
+  categoriesContainer.style.display = 'none';
+  gameOptions.style.display = 'none';
   document.getElementById('start-game-btn').style.display = 'none';
 }
 
-export function createQuestion(data, currentQuestion) {
-  console.log(data.results);
-  const gameSectionContainer = document.getElementById(
-    'game-section-container'
-  );
+export function displayQuestion(data, currentQuestion) {
+  questionDiv.style.display = 'block';
+  document.getElementById('next-question-btn').style.display = 'block';
 
-  const questionDiv = document.createElement('div');
-  questionDiv.className = 'question-div';
-  gameSectionContainer.appendChild(questionDiv);
+  const questionHeading = document.getElementById('question-heading');
+  const questionParagraph = document.getElementById('question-paragraph');
+  const countdown = document.getElementById('countdown');
+  countdown.style.display = 'block';
 
-  const questionParagraph = document.createElement('p');
-  questionParagraph.className = 'question-div__paragraph';
+  document.getElementById('next-question-btn').style.display = 'block';
+
+  console.log(currentQuestion);
+
   questionParagraph.innerText = atob(data.results[currentQuestion].question);
-  questionDiv.appendChild(questionParagraph);
 
-  const questionHeading = document.createElement('h3');
-  questionHeading.className = 'question-div__heading';
   questionHeading.innerText = `Question ${currentQuestion + 1} of ${
     data.results.length
   }`;
-  questionDiv.insertBefore(questionHeading, questionParagraph);
+}
+
+export function createMultipleChoiceAnswers(data, currentQuestion) {
+  console.log(data.results[currentQuestion]);
+}
+
+export function createTrueFalseAnswers(data, currentQuestion) {}
+
+export function addCountdownAnimation() {
+  svgCircle.classList.add('countdown-animation');
+}
+
+export function removeCountdownAnimation() {
+  svgCircle.classList.remove('countdown-animation');
 }
