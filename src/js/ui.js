@@ -1,17 +1,26 @@
 import { selectedCategoryCard } from './main';
 
-const categoriesContainer = document.getElementById('categories-container');
-const gameOptions = document.getElementById('game-options');
-const svgCircle = document.getElementById('svg-circle');
-const questionDiv = document.getElementById('question-div');
+const initialGameUi = document.getElementById('initial-game-ui'),
+  mainContainer = document.getElementById('main'),
+  errorParagraph = document.getElementById('fetch-error-msg'),
+  loadingSpinner = document.getElementById('loading-spinner'),
+  categoriesContainer = document.getElementById('categories-container'),
+  categoryHeading = document.getElementById('category-heading'),
+  gameOptions = document.getElementById('game-options'),
+  startGameBtn = document.getElementById('start-game-btn'),
+  optionsError = document.getElementById('options-error'),
+  svgCircle = document.getElementById('svg-circle'),
+  questionDiv = document.getElementById('question-div'),
+  countdown = document.getElementById('countdown'),
+  answersList = document.getElementById('answers-list'),
+  nextQuestionBtn = document.getElementById('next-question-btn');
 
 export function removeInitialGameUi() {
-  document.getElementById('initial-game-ui').style.display = 'none';
-  document.getElementById('main').style.backgroundImage = 'none';
+  initialGameUi.style.display = 'none';
+  mainContainer.style.backgroundImage = 'none';
 }
 
 export function displayFetchError(error) {
-  const errorParagraph = document.getElementById('fetch-error-msg');
   errorParagraph.style.display = 'block';
   errorParagraph.innerText = error;
 }
@@ -35,16 +44,15 @@ export function removeSelectedCategoryClass(categoryCard) {
 }
 
 export function displayLoadingSpinner(display) {
-  document.getElementById('loading-spinner').style.display = display;
+  loadingSpinner.style.display = display;
 }
 
 export function displayCallToActions() {
   gameOptions.style.display = 'flex';
-  document.getElementById('start-game-btn').style.display = 'block';
+  startGameBtn.style.display = 'block';
 }
 
 export function displayOptionsError(display, error = '') {
-  optionsError = document.getElementById('options-error');
   optionsError.style.display = display;
   optionsError.innerText = error;
 }
@@ -58,37 +66,71 @@ export function removePulseCategoryContainer() {
 }
 
 export function removeGameOptionsUi() {
-  document.getElementById('category-heading').style.display = 'none';
+  categoryHeading.style.display = 'none';
   categoriesContainer.style.display = 'none';
   gameOptions.style.display = 'none';
-  document.getElementById('start-game-btn').style.display = 'none';
+  startGameBtn.style.display = 'none';
 }
 
 export function displayQuestion(data, currentQuestion) {
   questionDiv.style.display = 'block';
-  document.getElementById('next-question-btn').style.display = 'block';
-
-  const questionHeading = document.getElementById('question-heading');
-  const questionParagraph = document.getElementById('question-paragraph');
-  const countdown = document.getElementById('countdown');
+  nextQuestionBtn.style.display = 'block';
   countdown.style.display = 'block';
+  nextQuestionBtn.style.display = 'block';
 
-  document.getElementById('next-question-btn').style.display = 'block';
-
-  console.log(currentQuestion);
-
-  questionParagraph.innerText = atob(data.results[currentQuestion].question);
-
+  const questionHeading = document.createElement('h3');
+  questionHeading.className = 'question-div__heading';
+  questionHeading.id = 'question-heading';
   questionHeading.innerText = `Question ${currentQuestion + 1} of ${
     data.results.length
   }`;
+  questionHeading = questionHeading;
+
+  const questionParagraph = document.createElement('p');
+  questionParagraph.className = 'question-div__paragraph';
+  questionParagraph.id = 'question-paragraph';
+  questionParagraph.innerText = atob(data.results[currentQuestion].question);
+  questionParagraph = questionParagraph;
+
+  questionDiv.insertBefore(questionHeading, countdown);
+  questionDiv.insertBefore(questionParagraph, countdown);
 }
 
-export function createMultipleChoiceAnswers(data, currentQuestion) {
-  console.log(data.results[currentQuestion]);
+export function displayMultipleChoiceAnswers(data, currentQuestion) {
+  const answers = getAnswers(data, currentQuestion);
+  createAnswersLis(answers);
 }
 
-export function createTrueFalseAnswers(data, currentQuestion) {}
+export function displayTrueFalseAnswers(data, currentQuestion) {
+  const answers = getAnswers(data, currentQuestion);
+  createAnswersLis(answers);
+}
+
+function getAnswers(data, currentQuestion) {
+  const { correct_answer, incorrect_answers } = data.results[currentQuestion];
+  const answers = [correct_answer, ...incorrect_answers];
+
+  return answers;
+}
+
+function createAnswersLis(answers) {
+  answers.forEach((answer) => {
+    const answerLi = document.createElement('li');
+    answerLi.className = 'answers-list__answer';
+    answerLi.innerText = atob(answer);
+    answersList.appendChild(answerLi);
+  });
+}
+
+export function removeQuestion() {
+  document.getElementById('question-heading').remove();
+  document.getElementById('question-paragraph').remove();
+}
+
+export function removeAnswers() {
+  const answers = document.querySelectorAll('.answers-list__answer');
+  answers.forEach((answer) => answer.remove());
+}
 
 export function addCountdownAnimation() {
   svgCircle.classList.add('countdown-animation');
@@ -96,4 +138,16 @@ export function addCountdownAnimation() {
 
 export function removeCountdownAnimation() {
   svgCircle.classList.remove('countdown-animation');
+}
+
+export function rightAnswer(selectedAnswer) {
+  const answers = document.querySelectorAll('.answers-list__answer');
+
+  selectedAnswer.classList.add('right-answer');
+
+  /*   answer.classList.add('.right-answer'); */
+}
+
+export function wrongAnswer(answer) {
+  /* answer.classList.add('wrong-answer'); */
 }

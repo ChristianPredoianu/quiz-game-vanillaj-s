@@ -122,3 +122,27 @@
     padding: 2rem;
   }
 }
+
+.answers-list {
+  @include flex-config($direction: column, $align: center);
+  gap: 2rem;
+  color: var(--clr-primary);
+  font-size: 2rem;
+  padding: 5rem;
+
+  &__answer {
+    width: 100%;
+    background-color: var(--clr-dark-blue);
+    text-align: center;
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+}
+
+.right-answer {
+  background-color: green;
+}
+
+.wrong-answer {
+  background-color: red;
+}

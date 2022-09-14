@@ -1,11 +1,18 @@
 import * as ui from './ui';
-import { fetchSessionToken, useApi } from './openTrivia';
+import { useApi } from './openTrivia';
 
-let selectedGameOptions = {};
-let isGamePlaying = false;
-let currentQuestion = 0;
-let countdownTime = 5;
-let countdownTimer;
+const gameSectionContainer = document.getElementById('game-section-container'),
+  difficultySelect = document.getElementById('difficulty-select'),
+  amountOfQuestions = document.getElementById('amount-of-questions-select'),
+  radioBtns = document.querySelectorAll('.radio-wrapper__radio'),
+  countdownNumber = document.getElementById('countdown-number');
+
+const selectedGameOptions = {};
+let isGamePlaying = false,
+  score = 0,
+  currentQuestion = 0,
+  countdownTime = 5,
+  countdownTimer = null;
 
 document.getElementById('continue-btn').addEventListener('click', () => {
   initGameUi();
@@ -14,7 +21,7 @@ document.getElementById('continue-btn').addEventListener('click', () => {
 function initGameUi() {
   const categoryUrl = 'https://opentdb.com/api_category.php';
 
-  document.getElementById('game-section-container').style.display = 'block';
+  gameSectionContainer.style.display = 'block';
 
   ui.removeInitialGameUi();
 
@@ -33,7 +40,7 @@ export function selectedCategoryCard() {
   categoryCards.forEach((categoryCard) => {
     categoryCard.addEventListener('click', function () {
       selectedGameOptions.category = this.id;
-      console.log(selectedGameOptions);
+
       categoryCards.forEach((categoryCard) => {
         ui.removeSelectedCategoryClass(categoryCard);
         ui.removePulseCategoryContainer();
@@ -46,15 +53,8 @@ export function selectedCategoryCard() {
 }
 
 function additionalGameOptions() {
-  const difficultySelect = document.getElementById('difficulty-select');
-  const amountOfQuestions = document.getElementById(
-    'amount-of-questions-select'
-  );
-  const radioBtns = document.querySelectorAll('.radio-wrapper__radio');
-
   selectedGameOptions.difficulty = difficultySelect.value;
   selectedGameOptions.amountOfQuestions = amountOfQuestions.value;
-
   radioBtns.forEach((radioBtn) => {
     if (radioBtn.checked) selectedGameOptions.questionsOptions = radioBtn.value;
   });
@@ -79,20 +79,20 @@ function checkIfUserSelectedCategory() {
 
 function startGame() {
   isGamePlaying = true;
-  fetchSessionToken().then((data) => {
-    const questionsUrl = `https://opentdb.com/api.php?amount=${selectedGameOptions.amountOfQuestions}&category=${selectedGameOptions.category}&difficulty=${selectedGameOptions.difficulty}&type=${selectedGameOptions.questionsOptions}&encode=base64&token=${data.token}`;
 
-    useApi(questionsUrl).then((data) => {
-      if (data.response_code === 1) {
-        ui.displayOptionsError(
-          'block',
-          'No Results The API does not have enough questions for your query, try other options'
-        );
-      } else {
-        playGame(data);
-      }
-    });
+  const questionsUrl = `https://opentdb.com/api.php?amount=${selectedGameOptions.amountOfQuestions}&category=${selectedGameOptions.category}&difficulty=${selectedGameOptions.difficulty}&type=${selectedGameOptions.questionsOptions}&encode=base64`;
+
+  useApi(questionsUrl).then((data) => {
+    if (data.response_code === 1) {
+      ui.displayOptionsError(
+        'block',
+        'No Results The API does not have enough questions for your query, try other options'
+      );
+    } else {
+      playGame(data);
+    }
   });
+
   ui.removePulseCategoryContainer();
 }
 
@@ -105,27 +105,35 @@ function playGame(data) {
   });
 }
 
+function checkQuestionType(data) {
+  selectedGameOptions.questionsOptions === 'multiple'
+    ? ui.displayMultipleChoiceAnswers(data, currentQuestion)
+    : ui.displayTrueFalseAnswers(data, currentQuestion);
+}
+
 function initialQuestion(data) {
   ui.removeGameOptionsUi();
   ui.displayOptionsError('none');
-  ui.displayQuestion(data, 0);
-  s;
-  selectedGameOptions.questionsOptions === 'multiple'
-    ? ui.createMultipleChoiceAnswers(data, 0)
-    : ui.createTrueFalseAnswers(data, currentQuestion);
+  checkQuestionType(data);
+  ui.displayQuestion(data, currentQuestion);
+  initQuestionTimer();
+  checkIfCorrectAnswer(data, currentQuestion);
 }
 
 function nextQuestion(data) {
   currentQuestion++;
   countdownTime = 5;
+  ui.removeQuestion();
+  ui.removeAnswers();
+  checkQuestionType(data);
   clearInterval(countdownTimer);
-  initQuestionTimer();
   ui.removeCountdownAnimation();
+  initQuestionTimer();
   ui.displayQuestion(data, currentQuestion);
+  checkIfCorrectAnswer(data, currentQuestion);
 }
 
 function initQuestionTimer() {
-  const countdownNumber = document.getElementById('countdown-number');
   countdownNumber.innerText = countdownTime;
 
   countdownTimer = setInterval(() => {
@@ -138,4 +146,25 @@ function initQuestionTimer() {
 
     countdownNumber.innerText = countdownTime;
   }, 1000);
+}
+
+function checkIfCorrectAnswer(data, currentQuestion) {
+  const answers = document.querySelectorAll('.answers-list__answer');
+  const correctAnswer = data.results[currentQuestion].correct_answer;
+  answers.forEach((answer) => {
+    answer.addEventListener('click', () => {
+      if (answer.innerText === atob(correctAnswer)) {
+        ++score;
+        //add right ui answer class here
+        ui.rightAnswer(answer);
+        console.log(answer);
+      } else if (countdownTime === 0) {
+        ui.rightAnswer(answer);
+        //add right ui answer class here
+      } else {
+        ui.wrongAnswer(answer);
+        // display ui wrong answer class here
+      }
+    });
+  });
 }
