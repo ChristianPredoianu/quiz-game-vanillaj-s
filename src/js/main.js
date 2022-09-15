@@ -8,17 +8,16 @@ const gameSectionContainer = document.getElementById('game-section-container'),
   countdownNumber = document.getElementById('countdown-number');
 
 const selectedGameOptions = {};
-let isGamePlaying = false,
-  score = 0,
+
+let score = 0,
   currentQuestion = 0,
-  countdownTime = 5,
-  countdownTimer = null;
+  countdownTime = 15,
+  countdownTimer = null,
+  isAnswerSelected = false;
 
-document.getElementById('continue-btn').addEventListener('click', () => {
-  initGameUi();
-});
+document.getElementById('continue-btn').addEventListener('click', initGame);
 
-function initGameUi() {
+function initGame() {
   const categoryUrl = 'https://opentdb.com/api_category.php';
 
   gameSectionContainer.style.display = 'block';
@@ -62,9 +61,9 @@ function additionalGameOptions() {
   return selectedGameOptions;
 }
 
-document.getElementById('start-game-btn').addEventListener('click', () => {
-  checkIfUserSelectedCategory();
-});
+document
+  .getElementById('start-game-btn')
+  .addEventListener('click', checkIfUserSelectedCategory);
 
 function checkIfUserSelectedCategory() {
   const gameOptions = additionalGameOptions();
@@ -78,8 +77,6 @@ function checkIfUserSelectedCategory() {
 }
 
 function startGame() {
-  isGamePlaying = true;
-
   const questionsUrl = `https://opentdb.com/api.php?amount=${selectedGameOptions.amountOfQuestions}&category=${selectedGameOptions.category}&difficulty=${selectedGameOptions.difficulty}&type=${selectedGameOptions.questionsOptions}&encode=base64`;
 
   useApi(questionsUrl).then((data) => {
@@ -101,44 +98,70 @@ function playGame(data) {
     initialQuestion(data);
   }
   document.getElementById('next-question-btn').addEventListener('click', () => {
-    nextQuestion(data);
+    !isAnswerSelected
+      ? ui.displayOptionsError('block', 'Please select an answer')
+      : nextQuestion(data);
   });
 }
 
-function checkQuestionType(data) {
+function checkAnswersType(data) {
+  const allAnswers = getAllAnswers(data, currentQuestion);
+  const shuffledAnswers = shuffleAnswers(allAnswers);
+
   selectedGameOptions.questionsOptions === 'multiple'
-    ? ui.displayMultipleChoiceAnswers(data, currentQuestion)
-    : ui.displayTrueFalseAnswers(data, currentQuestion);
+    ? ui.displayMultipleChoiceAnswers(shuffledAnswers)
+    : ui.displayTrueFalseAnswers(shuffledAnswers);
+}
+
+function getAllAnswers(data, currentQuestion) {
+  const { correct_answer, incorrect_answers } = data.results[currentQuestion];
+  const answers = [correct_answer, ...incorrect_answers];
+
+  return answers;
+}
+
+function shuffleAnswers(allAnswers) {
+  return allAnswers.sort(() => Math.random() - 0.5);
 }
 
 function initialQuestion(data) {
   ui.removeGameOptionsUi();
   ui.displayOptionsError('none');
-  checkQuestionType(data);
+  checkAnswersType(data);
   ui.displayQuestion(data, currentQuestion);
   initQuestionTimer();
   checkIfCorrectAnswer(data, currentQuestion);
 }
 
 function nextQuestion(data) {
-  currentQuestion++;
-  countdownTime = 5;
-  ui.removeQuestion();
-  ui.removeAnswers();
-  checkQuestionType(data);
-  clearInterval(countdownTimer);
-  ui.removeCountdownAnimation();
-  initQuestionTimer();
-  ui.displayQuestion(data, currentQuestion);
-  checkIfCorrectAnswer(data, currentQuestion);
+  const numberOfQuestions = data.results.length;
+
+  if (numberOfQuestions - 1 !== currentQuestion) {
+    currentQuestion++;
+    countdownTime = 15;
+    isAnswerSelected = false;
+    ui.removeQuestion();
+    ui.removeAnswers();
+    checkAnswersType(data);
+    clearInterval(countdownTimer);
+    initQuestionTimer();
+    ui.removeCountdownAnimation();
+    ui.displayQuestion(data, currentQuestion);
+    checkIfCorrectAnswer(data, currentQuestion);
+  } else {
+    ui.showPlayerScore(score, numberOfQuestions);
+    progressBarScore(numberOfQuestions);
+  }
 }
 
 function initQuestionTimer() {
   countdownNumber.innerText = countdownTime;
 
   countdownTimer = setInterval(() => {
-    if (countdownTime <= 0) {
+    if (countdownTime === 0) {
       clearInterval(countdownTimer);
+      disableAllAnswers();
+      isAnswerSelected = true;
     } else {
       --countdownTime;
       ui.addCountdownAnimation();
@@ -151,20 +174,90 @@ function initQuestionTimer() {
 function checkIfCorrectAnswer(data, currentQuestion) {
   const answers = document.querySelectorAll('.answers-list__answer');
   const correctAnswer = data.results[currentQuestion].correct_answer;
+
   answers.forEach((answer) => {
-    answer.addEventListener('click', () => {
+    answer.addEventListener('click', (e) => {
+      isAnswerSelected = true;
+      ui.displayOptionsError('none');
       if (answer.innerText === atob(correctAnswer)) {
         ++score;
-        //add right ui answer class here
-        ui.rightAnswer(answer);
-        console.log(answer);
-      } else if (countdownTime === 0) {
-        ui.rightAnswer(answer);
-        //add right ui answer class here
+        ui.rightAnswer(e.currentTarget);
       } else {
         ui.wrongAnswer(answer);
-        // display ui wrong answer class here
+        isAnswerSelected = true;
       }
+      disableRemainingAnswers(answers, e.currentTarget);
     });
   });
+}
+
+function disableAllAnswers() {
+  const answers = document.querySelectorAll('.answers-list__answer');
+  answers.forEach((answer) => ui.disableAnswers(answer));
+}
+
+function disableRemainingAnswers(answers, currentTarget) {
+  for (let i = 0; i < answers.length; i++) {
+    if (currentTarget !== answers[i]) {
+      ui.disableAnswers(answers[i]);
+    }
+  }
+}
+
+function progressBarScore(numOfQuestions) {
+  const scorePercentage = (score / numOfQuestions) * 100;
+  const scoreProgress = document.querySelector('.player-score-progress__bar');
+  scoreProgress.style.width = `${scorePercentage}%`;
+  scoreProgress.innerText = `${scorePercentage}%`;
+}
+
+function setScoreToLocalStorage() {
+  const playerNameInput = document.getElementById('player-name-input');
+  const amountOfQuestions = selectedGameOptions.amountOfQuestions;
+  const scorePercentage = (score / amountOfQuestions) * 100;
+
+  if (playerNameInput.value === '') {
+    ui.displayOptionsError('block', 'Please enter your name');
+  }
+  if (localStorage.getItem('scores') === null) {
+    const players = [
+      {
+        name: playerNameInput.value,
+        score: scorePercentage,
+      },
+    ];
+
+    localStorage.setItem('scores', JSON.stringify(players));
+  } else {
+    const newPlayer = {
+      name: playerNameInput.value,
+      score: scorePercentage,
+    };
+    const oldData = JSON.parse(localStorage.getItem('scores'));
+    console.log(oldData);
+    const newData = oldData.push(newPlayer);
+    localStorage.setItem('scores', JSON.stringify(newData));
+    console.log(newData);
+  }
+
+  /*   const newPlayersScores = existingPlayersScores.push(newPlayer); */
+  /* 
+    localStorage.setItem('scores', JSON.stringify(newPlayersScores)); */
+}
+
+document.getElementById('reset-game-btn').addEventListener('click', resetGame);
+
+function resetGame() {
+  setScoreToLocalStorage();
+  score = 0;
+  currentQuestion = 0;
+  countdownTime = 15;
+  countdownTimer = null;
+  isAnswerSelected = false;
+
+  document.getElementById('continue-btn').removeEventListener('click');
+  document.getElementById('start-game-btn').removeEventListener('click');
+  document.getElementById('next-question-btn').removeEventListener('click');
+
+  ui.resetGame();
 }
