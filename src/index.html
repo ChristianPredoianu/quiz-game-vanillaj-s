@@ -11,6 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap"
       rel="stylesheet"
     />
+    
     <title>Quiz Game</title>
   </head>
   <body>
@@ -24,6 +25,17 @@
         <button class="cta-btn" id="continue-btn">Start Playing</button>
       </div>
       <div class="game-section container" id="game-section-container">
+      <div class="player-score" id="player-score">
+        <h4 class="player-score__heading">Your Score</h4>
+        <p class="player-score__paragraph" id="player-score-paragraph">10 out of 10</p>
+        <div class="player-score-progress">
+          <div class="player-score-progress__bar"></div>
+        </div>
+        <div class="form-group field">
+          <input type="input" class="form-group__form-field" id="player-name-input" placeholder="Name" name="name" id='name' required />
+          <label for="name" class="form-group__form-label">Name</label>
+        </div>
+      </div>
         <div class="question-div" id="question-div">
           <div id="countdown">
             <div id="countdown-number"></div>
@@ -108,16 +120,20 @@
             </div>
           </div>
         </div>
+        <p class="options-error" id="options-error"></p>
         <button class="cta-btn cta-btn--next-question" id="next-question-btn">
           Next Question
         </button>
       </div>
-      <p class="options-error" id="options-error"></p>  
+       
       </p>
       <button class="cta-btn cta-btn--start-game" id="start-game-btn">
         Start Playing
       </button>
 
+      <button class="cta-btn cta-btn--reset-game" id="reset-game-btn">
+        Reset Game
+      </button>
     </main>
 
     <script type="module" src="js/main.js"></script>
