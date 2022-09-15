@@ -13,7 +13,10 @@ const initialGameUi = document.getElementById('initial-game-ui'),
   questionDiv = document.getElementById('question-div'),
   countdown = document.getElementById('countdown'),
   answersList = document.getElementById('answers-list'),
-  nextQuestionBtn = document.getElementById('next-question-btn');
+  nextQuestionBtn = document.getElementById('next-question-btn'),
+  playerScoreDiv = document.getElementById('player-score'),
+  playerScoreParagraph = document.getElementById('player-score-paragraph'),
+  resetGameBtn = document.getElementById('reset-game-btn');
 
 export function removeInitialGameUi() {
   initialGameUi.style.display = 'none';
@@ -96,21 +99,12 @@ export function displayQuestion(data, currentQuestion) {
   questionDiv.insertBefore(questionParagraph, countdown);
 }
 
-export function displayMultipleChoiceAnswers(data, currentQuestion) {
-  const answers = getAnswers(data, currentQuestion);
-  createAnswersLis(answers);
+export function displayMultipleChoiceAnswers(shuffeledAnswers) {
+  createAnswersLis(shuffeledAnswers);
 }
 
-export function displayTrueFalseAnswers(data, currentQuestion) {
-  const answers = getAnswers(data, currentQuestion);
-  createAnswersLis(answers);
-}
-
-function getAnswers(data, currentQuestion) {
-  const { correct_answer, incorrect_answers } = data.results[currentQuestion];
-  const answers = [correct_answer, ...incorrect_answers];
-
-  return answers;
+export function displayTrueFalseAnswers(shuffeledAnswers) {
+  createAnswersLis(shuffeledAnswers);
 }
 
 function createAnswersLis(answers) {
@@ -141,13 +135,29 @@ export function removeCountdownAnimation() {
 }
 
 export function rightAnswer(selectedAnswer) {
-  const answers = document.querySelectorAll('.answers-list__answer');
-
   selectedAnswer.classList.add('right-answer');
-
-  /*   answer.classList.add('.right-answer'); */
 }
 
 export function wrongAnswer(answer) {
-  /* answer.classList.add('wrong-answer'); */
+  answer.classList.add('wrong-answer');
+}
+
+export function disableAnswers(answers) {
+  answers.classList.add('disabled');
+}
+
+export function showPlayerScore(score, numOfQuestions) {
+  questionDiv.style.display = 'none';
+  answersList.style.display = 'none';
+  nextQuestionBtn.style.display = 'none';
+  playerScoreDiv.style.display = 'flex';
+  playerScoreParagraph.innerText = `${score} out of ${numOfQuestions}`;
+  resetGameBtn.style.display = 'block';
+}
+
+export function resetGame() {
+  playerScoreDiv.style.display = 'none';
+  resetGameBtn.style.display = 'none';
+  initialGameUi.style.display = 'flex';
+  mainContainer.style.backgroundImage = "url('../assets/game-background.jpg')";
 }

@@ -28,6 +28,7 @@
       0px -4px 100px rgba(109, 8, 139, 0.3);
     background: -webkit-linear-gradient(rgb(144, 135, 218), rgb(161, 120, 180));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: pulse 1s infinite ease;
   }
@@ -42,17 +43,17 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: var(--clr-overlay);
 }
 
 .game-section {
+  position: relative;
   @include flex-config(
     $direction: column,
     $align: center,
     $justify: space-around
   );
   min-height: 80vh;
-  position: relative;
   display: none;
   color: var(--clr-primary);
 
@@ -140,9 +141,32 @@
 }
 
 .right-answer {
-  background-color: green;
+  background-color: var(--clr-valid);
 }
 
 .wrong-answer {
-  background-color: red;
+  background-color: var(--clr-invalid);
+}
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.player-score {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  color: var(--clr-gray-dark);
+  padding-top: 10rem;
+
+  &__heading {
+    font-size: clamp(2rem, 2vw, 3rem);
+    padding: 1rem 0;
+  }
+
+  &__paragraph {
+    font-size: clamp(1.5rem, 2vw, 2rem);
+    padding: 1rem 0;
+  }
 }

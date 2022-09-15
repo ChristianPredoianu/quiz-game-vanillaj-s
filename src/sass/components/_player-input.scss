@@ -1,0 +1,32 @@
+@use '../abstracts/' as *;
+
+.form-group {
+  position: relative;
+  padding: 1.5rem 0 0;
+  margin-top: 5rem;
+  width: 50%;
+
+  &__form-field {
+    font-family: inherit;
+    width: 100%;
+    border: 0;
+    border-bottom: 2px solid var(--clr-gray-dark);
+    outline: 0;
+    font-size: 1.3rem;
+    color: var(--clr-gray-dark);
+    padding: 7px 0;
+    background: transparent;
+    transition: border-color 0.2s;
+
+    &::placeholder {
+      color: transparent;
+    }
+  }
+  &__form-label {
+    @include position($pos: absolute, $top: 0);
+    display: block;
+    transition: 0.2s;
+    font-size: 1.3rem;
+    color: var(--clr-gray-dark);
+  }
+}
