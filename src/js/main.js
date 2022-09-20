@@ -5,19 +5,45 @@ const gameSectionContainer = document.getElementById('game-section-container'),
   difficultySelect = document.getElementById('difficulty-select'),
   amountOfQuestions = document.getElementById('amount-of-questions-select'),
   radioBtns = document.querySelectorAll('.radio-wrapper__radio'),
-  countdownNumber = document.getElementById('countdown-number');
+  countdownNumber = document.getElementById('countdown-number'),
+  playerNameInput = document.getElementById('player-name-input');
 
 const selectedGameOptions = {};
 
 let score = 0,
+  quizData = null,
   currentQuestion = 0,
   countdownTime = 15,
   countdownTimer = null,
   isAnswerSelected = false;
 
-document.getElementById('continue-btn').addEventListener('click', initGame);
+initGame();
 
 function initGame() {
+  getPlayerScores();
+
+  document
+    .getElementById('continue-btn')
+    .addEventListener('click', getCategories);
+
+  document
+    .getElementById('start-game-btn')
+    .addEventListener('click', checkIfUserSelectedCategory);
+
+  document
+    .getElementById('next-question-btn')
+    .addEventListener('click', checkIfAnswerSelected);
+}
+
+function getPlayerScores() {
+  const playerScores = JSON.parse(localStorage.getItem('playerScores') || '[]');
+  const topScores = playerScores.sort((a, b) => b.score - a.score);
+  const topThreePlayers = topScores.slice(0, 3);
+
+  ui.displayPlayerScores(topThreePlayers);
+}
+
+function getCategories() {
   const categoryUrl = 'https://opentdb.com/api_category.php';
 
   gameSectionContainer.style.display = 'block';
@@ -61,10 +87,6 @@ function additionalGameOptions() {
   return selectedGameOptions;
 }
 
-document
-  .getElementById('start-game-btn')
-  .addEventListener('click', checkIfUserSelectedCategory);
-
 function checkIfUserSelectedCategory() {
   const gameOptions = additionalGameOptions();
 
@@ -80,32 +102,36 @@ function startGame() {
   const questionsUrl = `https://opentdb.com/api.php?amount=${selectedGameOptions.amountOfQuestions}&category=${selectedGameOptions.category}&difficulty=${selectedGameOptions.difficulty}&type=${selectedGameOptions.questionsOptions}&encode=base64`;
 
   useApi(questionsUrl).then((data) => {
+    quizData = data;
+
     if (data.response_code === 1) {
       ui.displayOptionsError(
         'block',
         'No Results The API does not have enough questions for your query, try other options'
       );
     } else {
-      playGame(data);
+      playGame();
     }
   });
 
   ui.removePulseCategoryContainer();
 }
 
-function playGame(data) {
+function playGame() {
+  console.log(quizData);
   if (currentQuestion === 0) {
-    initialQuestion(data);
+    initialQuestion(quizData);
   }
-  document.getElementById('next-question-btn').addEventListener('click', () => {
-    !isAnswerSelected
-      ? ui.displayOptionsError('block', 'Please select an answer')
-      : nextQuestion(data);
-  });
 }
 
-function checkAnswersType(data) {
-  const allAnswers = getAllAnswers(data, currentQuestion);
+function checkIfAnswerSelected() {
+  !isAnswerSelected
+    ? ui.displayOptionsError('block', 'Please select an answer')
+    : nextQuestion(quizData);
+}
+
+function checkAnswersType() {
+  const allAnswers = getAllAnswers(quizData, currentQuestion);
   const shuffledAnswers = shuffleAnswers(allAnswers);
 
   selectedGameOptions.questionsOptions === 'multiple'
@@ -113,8 +139,9 @@ function checkAnswersType(data) {
     : ui.displayTrueFalseAnswers(shuffledAnswers);
 }
 
-function getAllAnswers(data, currentQuestion) {
-  const { correct_answer, incorrect_answers } = data.results[currentQuestion];
+function getAllAnswers() {
+  const { correct_answer, incorrect_answers } =
+    quizData.results[currentQuestion];
   const answers = [correct_answer, ...incorrect_answers];
 
   return answers;
@@ -124,30 +151,29 @@ function shuffleAnswers(allAnswers) {
   return allAnswers.sort(() => Math.random() - 0.5);
 }
 
-function initialQuestion(data) {
+function initialQuestion() {
   ui.removeGameOptionsUi();
   ui.displayOptionsError('none');
-  checkAnswersType(data);
-  ui.displayQuestion(data, currentQuestion);
+  checkAnswersType(quizData);
+  ui.displayQuestion(quizData, currentQuestion);
   initQuestionTimer();
-  checkIfCorrectAnswer(data, currentQuestion);
+  checkIfCorrectAnswer(quizData, currentQuestion);
 }
 
-function nextQuestion(data) {
-  const numberOfQuestions = data.results.length;
-
+function nextQuestion() {
+  const numberOfQuestions = quizData.results.length;
+  isAnswerSelected = false;
   if (numberOfQuestions - 1 !== currentQuestion) {
     currentQuestion++;
     countdownTime = 15;
-    isAnswerSelected = false;
     ui.removeQuestion();
     ui.removeAnswers();
-    checkAnswersType(data);
+    checkAnswersType(quizData);
     clearInterval(countdownTimer);
     initQuestionTimer();
     ui.removeCountdownAnimation();
-    ui.displayQuestion(data, currentQuestion);
-    checkIfCorrectAnswer(data, currentQuestion);
+    ui.displayQuestion(quizData, currentQuestion);
+    checkIfCorrectAnswer();
   } else {
     ui.showPlayerScore(score, numberOfQuestions);
     progressBarScore(numberOfQuestions);
@@ -171,9 +197,10 @@ function initQuestionTimer() {
   }, 1000);
 }
 
-function checkIfCorrectAnswer(data, currentQuestion) {
+function checkIfCorrectAnswer() {
+  isAnswerSelected = false;
   const answers = document.querySelectorAll('.answers-list__answer');
-  const correctAnswer = data.results[currentQuestion].correct_answer;
+  const correctAnswer = quizData.results[currentQuestion].correct_answer;
 
   answers.forEach((answer) => {
     answer.addEventListener('click', (e) => {
@@ -212,52 +239,53 @@ function progressBarScore(numOfQuestions) {
 }
 
 function setScoreToLocalStorage() {
-  const playerNameInput = document.getElementById('player-name-input');
   const amountOfQuestions = selectedGameOptions.amountOfQuestions;
   const scorePercentage = (score / amountOfQuestions) * 100;
 
-  if (playerNameInput.value === '') {
-    ui.displayOptionsError('block', 'Please enter your name');
-  }
-  if (localStorage.getItem('scores') === null) {
-    const players = [
-      {
-        name: playerNameInput.value,
-        score: scorePercentage,
-      },
-    ];
+  const playerScores = JSON.parse(localStorage.getItem('playerScores') || '[]');
 
-    localStorage.setItem('scores', JSON.stringify(players));
-  } else {
-    const newPlayer = {
-      name: playerNameInput.value,
-      score: scorePercentage,
-    };
-    const oldData = JSON.parse(localStorage.getItem('scores'));
-    console.log(oldData);
-    const newData = oldData.push(newPlayer);
-    localStorage.setItem('scores', JSON.stringify(newData));
-    console.log(newData);
-  }
+  const newPlayer = {
+    player: playerNameInput.value,
+    score: scorePercentage,
+  };
 
-  /*   const newPlayersScores = existingPlayersScores.push(newPlayer); */
-  /* 
-    localStorage.setItem('scores', JSON.stringify(newPlayersScores)); */
+  playerScores.push(newPlayer);
+  localStorage.setItem('playerScores', JSON.stringify(playerScores));
 }
 
 document.getElementById('reset-game-btn').addEventListener('click', resetGame);
 
-function resetGame() {
-  setScoreToLocalStorage();
+function resetGlobals() {
+  quizData = null;
   score = 0;
   currentQuestion = 0;
   countdownTime = 15;
   countdownTimer = null;
   isAnswerSelected = false;
+}
 
-  document.getElementById('continue-btn').removeEventListener('click');
-  document.getElementById('start-game-btn').removeEventListener('click');
-  document.getElementById('next-question-btn').removeEventListener('click');
+function removeEventListeners() {
+  document
+    .getElementById('next-question-btn')
+    .removeEventListener('click', checkIfAnswerSelected);
+  document
+    .getElementById('start-game-btn')
+    .removeEventListener('click', checkIfUserSelectedCategory);
+  document
+    .getElementById('continue-btn')
+    .removeEventListener('click', getCategories);
+}
 
-  ui.resetGame();
+function resetGame() {
+  if (playerNameInput.value === '') {
+    ui.displayOptionsError('block', 'Please enter your name');
+  } else {
+    setScoreToLocalStorage();
+    clearInterval(countdownTimer);
+    resetGlobals();
+    removeEventListeners();
+    ui.resetGame();
+
+    initGame();
+  }
 }
