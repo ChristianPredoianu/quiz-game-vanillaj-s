@@ -11,12 +11,12 @@
   background-position: center;
 }
 
+.bg-none {
+  background-image: none;
+}
+
 .initial-game-ui {
-  @include flex-config(
-    $direction: column,
-    $align: center,
-    $justify: space-around
-  );
+  @include flex-config($direction: column, $align: center, $justify: center);
   min-height: 100vh;
   position: relative;
   z-index: 500;
@@ -37,6 +37,17 @@
     display: block;
     margin-left: 2rem;
   }
+}
+
+.top-scores {
+  color: white;
+}
+
+.scores {
+  color: #ffffff;
+  border: 1px solid white;
+  padding: 2rem;
+  font-size: 2rem;
 }
 
 .overlay {

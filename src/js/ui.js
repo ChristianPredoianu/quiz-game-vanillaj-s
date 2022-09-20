@@ -1,26 +1,49 @@
 import { selectedCategoryCard } from './main';
 
 const initialGameUi = document.getElementById('initial-game-ui'),
-  mainContainer = document.getElementById('main'),
-  errorParagraph = document.getElementById('fetch-error-msg'),
-  loadingSpinner = document.getElementById('loading-spinner'),
-  categoriesContainer = document.getElementById('categories-container'),
-  categoryHeading = document.getElementById('category-heading'),
-  gameOptions = document.getElementById('game-options'),
-  startGameBtn = document.getElementById('start-game-btn'),
-  optionsError = document.getElementById('options-error'),
-  svgCircle = document.getElementById('svg-circle'),
-  questionDiv = document.getElementById('question-div'),
-  countdown = document.getElementById('countdown'),
-  answersList = document.getElementById('answers-list'),
-  nextQuestionBtn = document.getElementById('next-question-btn'),
-  playerScoreDiv = document.getElementById('player-score'),
-  playerScoreParagraph = document.getElementById('player-score-paragraph'),
-  resetGameBtn = document.getElementById('reset-game-btn');
+  topScoresList = document.getElementById('top-scores-list');
+(mainContainer = document.getElementById('main')),
+  (gameSectionContainer = document.getElementById('game-section-container')),
+  (errorParagraph = document.getElementById('fetch-error-msg')),
+  (loadingSpinner = document.getElementById('loading-spinner')),
+  (categoriesContainer = document.getElementById('categories-container')),
+  (categoryHeading = document.getElementById('category-heading')),
+  (gameOptions = document.getElementById('game-options')),
+  (startGameBtn = document.getElementById('start-game-btn')),
+  (optionsError = document.getElementById('options-error')),
+  (svgCircle = document.getElementById('svg-circle')),
+  (questionDiv = document.getElementById('question-div')),
+  (countdown = document.getElementById('countdown')),
+  (answersList = document.getElementById('answers-list')),
+  (nextQuestionBtn = document.getElementById('next-question-btn')),
+  (playerScoreDiv = document.getElementById('player-score')),
+  (playerScoreParagraph = document.getElementById('player-score-paragraph')),
+  (resetGameBtn = document.getElementById('reset-game-btn'));
+
+export function displayPlayerScores(topScores) {
+  topScores.forEach((topScore, index) => {
+    console.log(index);
+    const topScoreLi = document.createElement('li');
+    const scoreDiv = document.createElement('div');
+    const numberSpan = document.createElement('span');
+    const nameParagraph = document.createElement('p');
+    const scoreParagraph = document.createElement('p');
+    numberSpan.innertext = index;
+    nameParagraph.innerText = topScore.player;
+    scoreParagraph.innerText = topScore.score;
+    scoreDiv.className = 'score-div';
+
+    topScoresList.appendChild(topScoreLi);
+    topScoreLi.appendChild(scoreDiv);
+    scoreDiv.appendChild(nameParagraph);
+    nameParagraph.appendChild(numberSpan);
+    scoreDiv.appendChild(scoreParagraph);
+  });
+}
 
 export function removeInitialGameUi() {
   initialGameUi.style.display = 'none';
-  mainContainer.style.backgroundImage = 'none';
+  mainContainer.classList.add('bg-none');
 }
 
 export function displayFetchError(error) {
@@ -29,6 +52,7 @@ export function displayFetchError(error) {
 }
 
 export function createCategoryCards(data) {
+  categoriesContainer.style.display = 'grid';
   const categories = data.trivia_categories;
 
   categories.forEach((category) => {
@@ -108,6 +132,8 @@ export function displayTrueFalseAnswers(shuffeledAnswers) {
 }
 
 function createAnswersLis(answers) {
+  answersList.style.display = 'flex';
+
   answers.forEach((answer) => {
     const answerLi = document.createElement('li');
     answerLi.className = 'answers-list__answer';
@@ -156,8 +182,19 @@ export function showPlayerScore(score, numOfQuestions) {
 }
 
 export function resetGame() {
+  gameSectionContainer.style.display = 'none';
   playerScoreDiv.style.display = 'none';
   resetGameBtn.style.display = 'none';
   initialGameUi.style.display = 'flex';
-  mainContainer.style.backgroundImage = "url('../assets/game-background.jpg')";
+  mainContainer.classList.remove('bg-none');
+
+  const categoryCards = document.querySelectorAll('.category-card');
+
+  categoryHeading.style.display = 'block';
+  categoryCards.forEach((categoryCard) => {
+    categoryCard.remove();
+  });
+
+  removeQuestion();
+  removeAnswers();
 }
