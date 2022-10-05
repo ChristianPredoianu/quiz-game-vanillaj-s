@@ -1,16 +1,16 @@
 @use '../abstracts/' as *;
 
 :root {
-  --clr-primary: #ebebeb;
-  --clr-gray-dark: #292929;
-  --clr-dark-blue: #055685;
-  --clr-orange: #ffa500;
-  --clr-overlay: rgba(0, 0, 0, 0.8);
-  --clr-invalid: #e71b1b;
-  --clr-valid: #008000;
+  --clr-primary: hsl(0, 0%, 92%);
+  --clr-gray-dark: hsl(0, 0%, 16%);
+  --clr-dark-blue: hsl(202, 93%, 27%);
+  --clr-orange: hsl(39, 100%, 50%);
+  --clr-overlay: hsla(0, 0%, 0%, 0.8);
+  --clr-invalid: hsl(0, 81%, 51%);
+  --clr-valid: hsl(120, 100%, 25%);
 
   --fw-normal: 400;
   --fw-bold: 700;
 
-  --shdw-box: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  --shdw-box: hsla(0, 0%, 0%, 0.35) 0px 5px 15px;
 }
