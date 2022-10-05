@@ -1,28 +1,30 @@
 import { selectedCategoryCard } from './main';
+const topScoresDiv = document.getElementById('top-scores'),
+  initialGameUi = document.getElementById('initial-game-ui'),
+  topScoresList = document.getElementById('top-scores-list'),
+  mainContainer = document.getElementById('main'),
+  gameSectionContainer = document.getElementById('game-section-container'),
+  errorParagraph = document.getElementById('fetch-error-msg'),
+  loadingSpinner = document.getElementById('loading-spinner'),
+  categoriesContainer = document.getElementById('categories-container'),
+  categoryHeading = document.getElementById('category-heading'),
+  gameOptions = document.getElementById('game-options'),
+  startGameBtn = document.getElementById('start-game-btn'),
+  optionsError = document.getElementById('options-error'),
+  svgCircle = document.getElementById('svg-circle'),
+  questionDiv = document.getElementById('question-div'),
+  countdown = document.getElementById('countdown'),
+  answersList = document.getElementById('answers-list'),
+  nextQuestionBtn = document.getElementById('next-question-btn'),
+  playerScoreDiv = document.getElementById('player-score'),
+  playerScoreParagraph = document.getElementById('player-score-paragraph'),
+  resetGameBtn = document.getElementById('reset-game-btn');
 
-const initialGameUi = document.getElementById('initial-game-ui'),
-  topScoresList = document.getElementById('top-scores-list');
-(mainContainer = document.getElementById('main')),
-  (gameSectionContainer = document.getElementById('game-section-container')),
-  (errorParagraph = document.getElementById('fetch-error-msg')),
-  (loadingSpinner = document.getElementById('loading-spinner')),
-  (categoriesContainer = document.getElementById('categories-container')),
-  (categoryHeading = document.getElementById('category-heading')),
-  (gameOptions = document.getElementById('game-options')),
-  (startGameBtn = document.getElementById('start-game-btn')),
-  (optionsError = document.getElementById('options-error')),
-  (svgCircle = document.getElementById('svg-circle')),
-  (questionDiv = document.getElementById('question-div')),
-  (countdown = document.getElementById('countdown')),
-  (answersList = document.getElementById('answers-list')),
-  (nextQuestionBtn = document.getElementById('next-question-btn')),
-  (playerScoreDiv = document.getElementById('player-score')),
-  (playerScoreParagraph = document.getElementById('player-score-paragraph')),
-  (resetGameBtn = document.getElementById('reset-game-btn'));
+export function displayPlayersTopScores(topScores) {
+  topScoresDiv.style.display = 'block';
 
-export function displayPlayerScores(topScores) {
   topScores.forEach((topScore, index) => {
-    console.log(index);
+    console.log(topScore);
     const topScoreLi = document.createElement('li');
     const scoreDiv = document.createElement('div');
     const numberSpan = document.createElement('span');
@@ -30,8 +32,9 @@ export function displayPlayerScores(topScores) {
     const scoreParagraph = document.createElement('p');
     numberSpan.innertext = index;
     nameParagraph.innerText = topScore.player;
-    scoreParagraph.innerText = topScore.score;
+    scoreParagraph.innerText = `${topScore.score} %`;
     scoreDiv.className = 'score-div';
+    topScoreLi.className = 'score-li';
 
     topScoresList.appendChild(topScoreLi);
     topScoreLi.appendChild(scoreDiv);
@@ -49,6 +52,10 @@ export function removeInitialGameUi() {
 export function displayFetchError(error) {
   errorParagraph.style.display = 'block';
   errorParagraph.innerText = error;
+}
+
+export function displayGameSection() {
+  gameSectionContainer.style.display = 'block';
 }
 
 export function createCategoryCards(data) {
@@ -111,7 +118,6 @@ export function displayQuestion(data, currentQuestion) {
   questionHeading.innerText = `Question ${currentQuestion + 1} of ${
     data.results.length
   }`;
-  questionHeading = questionHeading;
 
   const questionParagraph = document.createElement('p');
   questionParagraph.className = 'question-div__paragraph';
@@ -145,9 +151,7 @@ function createAnswersLis(answers) {
 export function removeQuestion() {
   document.getElementById('question-heading').remove();
   document.getElementById('question-paragraph').remove();
-}
 
-export function removeAnswers() {
   const answers = document.querySelectorAll('.answers-list__answer');
   answers.forEach((answer) => answer.remove());
 }
@@ -181,20 +185,29 @@ export function showPlayerScore(score, numOfQuestions) {
   resetGameBtn.style.display = 'block';
 }
 
-export function resetGame() {
-  gameSectionContainer.style.display = 'none';
-  playerScoreDiv.style.display = 'none';
-  resetGameBtn.style.display = 'none';
-  initialGameUi.style.display = 'flex';
-  mainContainer.classList.remove('bg-none');
-
+function removeCategoryCards() {
   const categoryCards = document.querySelectorAll('.category-card');
 
   categoryHeading.style.display = 'block';
   categoryCards.forEach((categoryCard) => {
     categoryCard.remove();
   });
+}
 
+function removeTopScores() {
+  const scores = document.querySelectorAll('.score-li');
+
+  scores.forEach((score) => score.remove());
+}
+
+export function resetGameUi() {
+  gameSectionContainer.style.display = 'none';
+  playerScoreDiv.style.display = 'none';
+  resetGameBtn.style.display = 'none';
+  initialGameUi.style.display = 'flex';
+  mainContainer.classList.remove('bg-none');
+
+  removeCategoryCards();
   removeQuestion();
-  removeAnswers();
+  removeTopScores();
 }

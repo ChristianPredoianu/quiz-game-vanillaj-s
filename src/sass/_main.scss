@@ -17,6 +17,7 @@
 
 .initial-game-ui {
   @include flex-config($direction: column, $align: center, $justify: center);
+  gap: 4rem;
   min-height: 100vh;
   position: relative;
   z-index: 500;
@@ -24,9 +25,9 @@
   &__heading {
     font-size: clamp(4rem, 2vw, 7rem);
     text-transform: uppercase;
-    text-shadow: 2px 17px 5px rgba(170, 11, 170, 0.3),
-      0px -4px 100px rgba(109, 8, 139, 0.3);
-    background: -webkit-linear-gradient(rgb(144, 135, 218), rgb(161, 120, 180));
+    text-shadow: 2px 17px 5px hsla(300, 88%, 35%, 0.3),
+      0px -4px 100px hsla(286, 89%, 29%, 0.3);
+    background: -webkit-linear-gradient(hsl(247, 53%, 69%), rgb(161, 120, 180));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -39,15 +40,29 @@
   }
 }
 
-.top-scores {
-  color: white;
+.scores {
+  display: none;
+  color: var(--clr-primary);
+  border: 1px solid var(--clr-primary);
+  padding: 2rem 4rem;
+  font-size: 1.2rem;
+
+  &__top-scores-heading {
+    font-size: 1.5rem;
+    color: var(--clr-primary);
+    margin-bottom: 1rem;
+  }
 }
 
-.scores {
-  color: #ffffff;
-  border: 1px solid white;
-  padding: 2rem;
-  font-size: 2rem;
+.top-scores-list {
+  @include flex-config($direction: column);
+  gap: 2rem;
+}
+
+.score-div {
+  p {
+    margin-top: 0.5rem;
+  }
 }
 
 .overlay {
@@ -118,12 +133,12 @@
 .question-div {
   display: none;
   font-size: clamp(1.8rem, 2vw, 2.5rem);
-  background: rgb(71, 64, 205);
+  background: hsl(243, 59%, 53%);
   background: linear-gradient(
     357deg,
-    rgba(71, 64, 205, 1) 0%,
-    rgba(93, 9, 121, 1) 100%,
-    rgba(0, 212, 255, 1) 100%
+    hsl(243, 59%, 53%) 0%,
+    hsl(285, 86%, 25%) 100%,
+    hsl(190, 100%, 50%) 100%
   );
   padding: 5rem 3rem;
   border-bottom-left-radius: 2rem;
