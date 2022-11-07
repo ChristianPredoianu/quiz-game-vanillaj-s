@@ -242,7 +242,7 @@ function resetGame() {
     resetGlobals();
     removeEventListeners();
     ui.resetGameUi();
-
+    ui.displayOptionsError('none', '');
     initGame();
   }
 }
